@@ -7,3 +7,78 @@
         .mobile-menu.open {
             max-height: 500px;
         }
+
+        @keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  33% { transform: translateY(-20px) rotate(120deg) scale(1.1); }
+  66% { transform: translateY(10px) rotate(240deg) scale(0.9); }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.static-3d-card:hover {
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(20px);
+  box-shadow: 0 0 80px rgba(0, 242, 254, 0.2), 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+
+
+/* ---------------------------------------------------------- */
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
+}
+
+
+
+
+
+.w-stretch {
+  width: stretch;
+  width: -webkit-fill-available; /* Edge, Chrome, Safari */
+  width: -moz-available; /* Firefox */
+}
+
+
+
+/* ---------------------------------------------------------- */
+
+/* Avoid layout-triggering properties in animations */
+@keyframes blink {
+  to {
+    opacity: 0; /* Use opacity instead of visibility */
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%); /* Use transform instead of background-position */
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+
+

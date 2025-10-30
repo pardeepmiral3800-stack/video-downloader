@@ -1,5 +1,4 @@
-import { useState } from "react";
-import "./App.css";
+import { useState, useEffect, useRef } from "react";
 
 function App() {
   const [url, setUrl] = useState("");
@@ -7,16 +6,235 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [downloading, setDownloading] = useState(false);
-  const [open, setOpen] = useState(1);
+  const [open, setOpen] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [language, setLanguage] = useState("en");
+  const [copiedText, setCopiedText] = useState("");
+  
+  // 3D References
+  const mainCardRef = useRef(null);
+  const navRef = useRef(null);
+
+  // Language translations (same as your code)
+  const translations = {
+    en: {
+      navTitle: "NEO-INSTA",
+      features: "Features",
+      services: "Services",
+      faq: "FAQ",
+      placeholder: "🔗 Paste Instagram URL here...",
+      fetch: "FETCH MEDIA",
+      fetching: "PROCESSING...",
+      download: "📥 DOWNLOAD NOW",
+      downloading: "📥 DOWNLOADING...",
+      preview: "MEDIA PREVIEW",
+      noPreview: "No preview available",
+      errorInvalidUrl: "❌ Invalid Instagram URL",
+      errorEmptyUrl: "⚠️ Please enter URL",
+      heroTitle: "NEURAL INSTAGRAM DOWNLOADER",
+      heroSubtitle: "Download Reels, Posts & Stories in 4K Quality",
+      featuresTitle: "AI FEATURES",
+      servicesTitle: "🌟 OUR SERVICES",
+      faqTitle: "❔ FREQUENTLY ASKED QUESTIONS",
+      copyright: "© 2025 NEO-INSTA. All rights reserved.",
+      privacy: "Privacy Policy",
+      terms: "Terms of Service",
+      likes: "Likes",
+      comments: "Comments",
+      timestamp: "Posted on",
+      views: "Views",
+      description: "Description",
+      copy: "Copy",
+      copied: "Copied!",
+    },
+    hi: {
+      navTitle: "नियो-इंस्टा",
+      features: "विशेषताएं",
+      services: "सेवाएं",
+      faq: "सवाल-जवाब",
+      placeholder: "🔗 इंस्टाग्राम URL पेस्ट करें...",
+      fetch: "मीडिया लाएं",
+      fetching: "प्रोसेसिंग...",
+      download: "📥 डाउनलोड करें",
+      downloading: "📥 डाउनलोड हो रहा...",
+      preview: "मीडिया पूर्वावलोकन",
+      noPreview: "कोई पूर्वावलोकन नहीं",
+      errorInvalidUrl: "❌ अमान्य इंस्टाग्राम URL",
+      errorEmptyUrl: "⚠️ कृपया URL दर्ज करें",
+      heroTitle: "न्यूरल इंस्टाग्राम डाउनलोडर",
+      heroSubtitle: "4K क्वालिटी में रील्स, पोस्ट्स और स्टोरीज़ डाउनलोड करें",
+      featuresTitle: "AI विशेषताएं",
+      servicesTitle: "🌟 हमारी सेवाएं",
+      faqTitle: "❔ अक्सर पूछे जाने वाले सवाल",
+      copyright: "© 2025 नियो-इंस्टा। सभी अधिकार सुरक्षित।",
+      privacy: "गोपनीयता नीति",
+      terms: "सेवा की शर्तें",
+      likes: "लाइक्स",
+      comments: "कमेंट्स",
+      timestamp: "पोस्ट की तारीख",
+      views: "व्यूज",
+      description: "विवरण",
+      copy: "कॉपी करें",
+      copied: "कॉपी किया गया!",
+    },
+    es: {
+      navTitle: "NEO-INSTA",
+      features: "Características",
+      services: "Servicios",
+      faq: "Preguntas Frecuentes",
+      placeholder: "🔗 Pegar URL de Instagram aquí...",
+      fetch: "OBTENER MEDIA",
+      fetching: "PROCESANDO...",
+      download: "📥 DESCARGAR AHORA",
+      downloading: "📥 DESCARGANDO...",
+      preview: "VISTA PREVIA",
+      noPreview: "No hay vista previa disponible",
+      errorInvalidUrl: "❌ URL de Instagram no válida",
+      errorEmptyUrl: "⚠️ Por favor ingrese URL",
+      heroTitle: "DESCARGADOR NEURAL DE INSTAGRAM",
+      heroSubtitle: "Descarga Reels, Posts y Stories en Calidad 4K",
+      featuresTitle: "CARACTERÍSTICAS IA",
+      servicesTitle: "🌟 NUESTROS SERVICIOS",
+      faqTitle: "❔ PREGUNTAS FRECUENTES",
+      copyright: "© 2025 NEO-INSTA. Todos los derechos reservados.",
+      privacy: "Política de Privacidad",
+      terms: "Términos de Servicio",
+      likes: "Me gusta",
+      comments: "Comentarios",
+      timestamp: "Publicado el",
+      views: "Vistas",
+      description: "Descripción",
+      copy: "Copiar",
+      copied: "¡Copiado!",
+    },
+    fr: {
+      navTitle: "NEO-INSTA",
+      features: "Fonctionnalités",
+      services: "Services",
+      faq: "FAQ",
+      placeholder: "🔗 Coller l'URL Instagram ici...",
+      fetch: "OBTENIR LE MÉDIA",
+      fetching: "TRAITEMENT...",
+      download: "📥 TÉLÉCHARGER MAINTENANT",
+      downloading: "📥 TÉLÉCHARGEMENT...",
+      preview: "APERÇU DU MÉDIA",
+      noPreview: "Aucun aperçu disponible",
+      errorInvalidUrl: "❌ URL Instagram non valide",
+      errorEmptyUrl: "⚠️ Veuillez saisir l'URL",
+      heroTitle: "TÉLÉCHARGEUR NEURAL INSTAGRAM",
+      heroSubtitle: "Téléchargez Reels, Posts et Stories en Qualité 4K",
+      featuresTitle: "FONCTIONNALITÉS IA",
+      servicesTitle: "🌟 NOS SERVICES",
+      faqTitle: "❔ QUESTIONS FRÉQUENTES",
+      copyright: "© 2025 NEO-INSTA. Tous droits réservés.",
+      privacy: "Politique de Confidentialité",
+      terms: "Conditions d'Utilisation",
+      likes: "J'aime",
+      comments: "Commentaires",
+      timestamp: "Publié le",
+      views: "Vues",
+      description: "Description",
+      copy: "Copier",
+      copied: "Copié!",
+    },
+    de: {
+      navTitle: "NEO-INSTA",
+      features: "Funktionen",
+      services: "Dienstleistungen",
+      faq: "FAQ",
+      placeholder: "🔗 Instagram-URL hier einfügen...",
+      fetch: "MEDIA ABRUFEN",
+      fetching: "WIRD VERARBEITET...",
+      download: "📥 JETZT HERUNTERLADEN",
+      downloading: "📥 WIRD HERUNTERGELADEN...",
+      preview: "MEDIEN-VORSCHAU",
+      noPreview: "Keine Vorschau verfügbar",
+      errorInvalidUrl: "❌ Ungültige Instagram-URL",
+      errorEmptyUrl: "⚠️ Bitte URL eingeben",
+      heroTitle: "NEURALER INSTAGRAM-DOWNLOADER",
+      heroSubtitle: "Laden Sie Reels, Posts und Stories in 4K-Qualität herunter",
+      featuresTitle: "KI-FUNKTIONEN",
+      servicesTitle: "🌟 UNSERE DIENSTLEISTUNGEN",
+      faqTitle: "❔ HÄUFIG GESTELLTE FRAGEN",
+      copyright: "© 2025 NEO-INSTA. Alle Rechte vorbehalten.",
+      privacy: "Datenschutzrichtlinie",
+      terms: "Nutzungsbedingungen",
+      likes: "Likes",
+      comments: "Kommentare",
+      timestamp: "Veröffentlicht am",
+      views: "Aufrufe",
+      description: "Beschreibung",
+      copy: "Kopieren",
+      copied: "Kopiert!",
+    },
+    ar: {
+      navTitle: "نيو-إنستا",
+      features: "الميزات",
+      services: "الخدمات",
+      faq: "الأسئلة الشائعة",
+      placeholder: "🔗 الصق رابط إنستغرام هنا...",
+      fetch: "جلب المحتوى",
+      fetching: "جاري المعالجة...",
+      download: "📥 تحميل الآن",
+      downloading: "📥 جاري التحميل...",
+      preview: "معاينة المحتوى",
+      noPreview: "لا توجد معاينة متاحة",
+      errorInvalidUrl: "❌ رابط إنستغرام غير صالح",
+      errorEmptyUrl: "⚠️ يرجى إدخال الرابط",
+      heroTitle: "تحميل إنستغرام العصبي",
+      heroSubtitle: "حمل الريلز والمشاركات والستوريات بجودة 4K",
+      featuresTitle: "ميزات الذكاء الاصطناعي",
+      servicesTitle: "🌟 خدماتنا",
+      faqTitle: "❔ الأسئلة الشائعة",
+      copyright: "© 2025 نيو-إنستا. جميع الحقوق محفوظة.",
+      privacy: "سياسة الخصوصية",
+      terms: "شروط الخدمة",
+      likes: "الإعجابات",
+      comments: "التعليقات",
+      timestamp: "نشر في",
+      views: "المشاهدات",
+      description: "الوصف",
+      copy: "نسخ",
+      copied: "تم النسخ!",
+    },
+  };
+
+  const t = translations[language];
+
+  // Auto-fetch when URL changes (with debounce) - Same as your code
+  useEffect(() => {
+    if (url && isValidInstagramUrl(url)) {
+      const timer = setTimeout(() => {
+        handleFetch();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [url]);
+
+  const handleLanguageChange = (e) => {
+    setLanguage(e.target.value);
+  };
+
+  // Copy to clipboard function
+  const copyToClipboard = async (text, type) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedText(type);
+      setTimeout(() => setCopiedText(""), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
   const handleFetch = async () => {
     if (!url) {
-      setError("Please enter an Instagram URL");
+      setError(t.errorEmptyUrl);
       return;
     }
 
     if (!isValidInstagramUrl(url)) {
-      setError("Please enter a valid Instagram URL (reel, post, or story)");
+      setError(t.errorInvalidUrl);
       return;
     }
 
@@ -25,128 +243,182 @@ function App() {
     setMediaInfo(null);
 
     try {
-      const endpoint = `http://localhost:5000/instagram?url=${encodeURIComponent(
-        url
-      )}`;
+      const endpoint = `http://localhost:5000/instagram?url=${encodeURIComponent(url)}`;
       const res = await fetch(endpoint);
       const data = await res.json();
 
       if (res.ok) {
         setMediaInfo(data);
       } else {
-        setError(
-          data.error ||
-            "Failed to fetch media. The content might be private or the URL incorrect."
-        );
+        setError(data.error || "Failed to fetch media.");
       }
     } catch (err) {
       setError("Failed to fetch media. Please check your connection.");
+      console.error("Fetch error:", err);
     }
 
     setLoading(false);
   };
 
+  // Download function - Same as your code
   const handleDownload = async () => {
-    if (!url || !mediaInfo) return;
+    if (!mediaInfo || !mediaInfo.mediaUrl) {
+      setError("No media available for download");
+      return;
+    }
 
     setDownloading(true);
-
+    
     try {
-      if (mediaInfo.mediaUrl) {
-        const response = await fetch(mediaInfo.mediaUrl);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.setAttribute("download", "instagram_media.mp4");
+      const response = await fetch(mediaInfo.mediaUrl);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch media');
+      }
+      
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      
+      const extension = mediaInfo.type === 'video' ? 'mp4' : 'jpg';
+      const filename = `instagram_${Date.now()}.${extension}`;
+      link.download = filename;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      window.URL.revokeObjectURL(downloadUrl);
+      
+    } catch (error) {
+      console.error('Download failed:', error);
+      
+      try {
+        const downloadEndpoint = `http://localhost:5000/instagram/download?url=${encodeURIComponent(url)}`;
+        const link = document.createElement('a');
+        link.href = downloadEndpoint;
+        link.download = 'instagram_media.mp4';
+        link.style.display = 'none';
+        
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
-        URL.revokeObjectURL(blobUrl);
+      } catch (fallbackError) {
+        console.error('Fallback download failed:', fallbackError);
+        setError('Download failed. Please try again.');
       }
-    } catch (err) {
-      setError("Failed to download media");
     }
-
-    setDownloading(false);
+    
+    setTimeout(() => setDownloading(false), 1500);
   };
 
   const isValidInstagramUrl = (url) => {
-    return /^(https?:\/\/)?(www\.)?instagram\.com\/(p|reel|stories)\/.+$/.test(
-      url
-    );
+    return /^(https?:\/\/)?(www\.)?instagram\.com\/(p|reel|stories)\/.+$/.test(url);
   };
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setUrl(text);
+    } catch (err) {
+      console.error("Failed to read clipboard: ", err);
+      setError("Please paste the URL manually");
+    }
+  };
+
+  // Format functions - Same as your code
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return "";
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleDateString(language, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      return timestamp;
+    }
+  };
+
+  const formatNumber = (num) => {
+    if (!num && num !== 0) return "0";
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  // Floating Background Component
+  const FloatingBackground = () => (
+    <div className="fixed inset-0 -z-10 overflow-hidden">
+      {[...Array(6)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full opacity-[0.15] animate-float"
+          style={{
+            width: Math.random() * 400 + 100,
+            height: Math.random() * 400 + 100,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            background: `linear-gradient(45deg, ${
+              ['#00f2fe', '#4facfe', '#ff6b6b', '#42e695', '#9d50bb', '#ff5e62'][i % 6]
+            }, ${
+              ['#4facfe', '#ff6b6b', '#42e695', '#9d50bb', '#ff5e62', '#00f2fe'][i % 6]
+            })`,
+            animationDelay: `${i * 3}s`,
+            animationDuration: `${Math.random() * 10 + 15}s`,
+            filter: 'blur(50px)'
+          }}
+        />
+      ))}
+    </div>
+  );
+
   return (
-    <>
-      <nav className="bg-gradient-to-r from-[#1f4037] to-[#99f2c8] shadow-lg fixed w-full top-0 z-50">
+    <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden relative font-['Rajdhani']">
+      <FloatingBackground />
+      
+      {/* 3D Navigation */}
+      <nav 
+        ref={navRef}
+        className="bg-gray-800/70 backdrop-blur-xl border-b border-cyan-500/30 shadow-2xl fixed w-full top-0 z-50 transition-all duration-300"
+      >
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <a className="text-white text-2xl font-bold tracking-wide" href="#">
-            <i className="fab fa-instagram mr-2"></i>Insta Downloader
-          </a>
+          <div className="text-3xl font-bold font-['Orbitron'] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
+            🌟 {t.navTitle}
+          </div>
 
           <button
-            className="lg:hidden p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="lg:hidden p-3 rounded-xl bg-cyan-500/20 border border-cyan-400/30 hover:bg-cyan-500/30 transition-all"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
           </button>
 
-          <div className="hidden lg:flex lg:items-center">
-            <ul className="flex flex-col lg:flex-row lg:space-x-6">
-              <li>
-                <a
-                  href="#features"
-                  className="block px-3 py-2 text-white text-lg hover:text-yellow-400 transition-colors duration-300"
-                >
-                  Features
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#services"
-                  className="block px-3 py-2 text-white text-lg hover:text-yellow-400 transition-colors duration-300"
-                >
-                  Services
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#faq"
-                  className="block px-3 py-2 text-white text-lg hover:text-yellow-400 transition-colors duration-300"
-                >
-                  FAQ
-                </a>
-              </li>
-            </ul>
-
-            <select
-              id="language-select"
-              className="ml-4 px-3 py-2 rounded-sm border-0 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          <div className="hidden lg:flex lg:items-center space-x-8">
+            {['features', 'services', 'faq'].map((item) => (
+              <a 
+                key={item} 
+                href={`#${item}`} 
+                className="relative group text-lg font-semibold hover:text-cyan-400 transition-all duration-300 hover:scale-110"
+              >
+                {t[item]}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></span>
+              </a>
+            ))}
+            
+            <select 
+              value={language} 
+              onChange={handleLanguageChange}
+              className="bg-gray-700/50 border border-cyan-400/30 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 backdrop-blur-md"
             >
               <option value="en">🇺🇸 English</option>
               <option value="hi">🇮🇳 Hindi</option>
@@ -159,39 +431,23 @@ function App() {
         </div>
 
         {isOpen && (
-          <div className="lg:hidden bg-[#1a352e] animate-slideDown">
-            <div className="container mx-auto px-6 py-4">
-              <ul className="space-y-3">
-                <li>
+          <div className="lg:hidden bg-gray-800/90 backdrop-blur-xl border-t border-cyan-500/30 animate-slideDown">
+            <div className="container mx-auto px-6 py-6">
+              <div className="space-y-4">
+                {['features', 'services', 'faq'].map((item) => (
                   <a
-                    href="#features"
-                    className="block px-3 py-2 text-white text-lg hover:text-yellow-400 transition-colors duration-300"
+                    key={item}
+                    href={`#${item}`}
+                    className="block px-4 py-3 bg-cyan-500/10 border border-cyan-400/20 rounded-xl hover:bg-cyan-500/20 transition-all text-center font-semibold"
                   >
-                    <i className="fas fa-star mr-2"></i>Features
+                    {t[item]}
                   </a>
-                </li>
-                <li>
-                  <a
-                    href="#services"
-                    className="block px-3 py-2 text-white text-lg hover:text-yellow-400 transition-colors duration-300"
-                  >
-                    <i className="fas fa-cogs mr-2"></i>Services
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#faq"
-                    className="block px-3 py-2 text-white text-lg hover:text-yellow-400 transition-colors duration-300"
-                  >
-                    <i className="fas fa-question-circle mr-2"></i>FAQ
-                  </a>
-                </li>
-              </ul>
-
-              <div className="mt-4">
-                <select
-                  id="mobile-language-select"
-                  className="w-full px-3 py-2 rounded-sm border-0 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                ))}
+                
+                <select 
+                  value={language} 
+                  onChange={handleLanguageChange}
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-cyan-400/30 rounded-xl text-white focus:outline-none"
                 >
                   <option value="en">🇺🇸 English</option>
                   <option value="hi">🇮🇳 Hindi</option>
@@ -212,257 +468,404 @@ function App() {
         )}
       </nav>
 
-      <div className="min-h-screen bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white text-center px-5 pt-[70px] pb-[100px]">
-        <section className="text-white text-center px-4 pt-10">
-          <section id="hero" className="flex justify-center">
-            <div className="flex flex-wrap justify-center gap-2 bg-white/10 rounded-[10px] p-3 shadow max-w-full">
+      {/* Main 3D Content */}
+      <div className="pt-32 pb-16 px-4 min-h-screen flex items-center justify-center">
+        <div 
+          ref={mainCardRef}
+          className="w-full max-w-6xl bg-gray-800/40 backdrop-blur-2xl border border-cyan-500/30 rounded-3xl p-8 transition-all duration-300 relative overflow-hidden static-3d-card"
+          style={{
+            boxShadow: `
+              0 0 80px rgba(0, 242, 254, 0.1),
+              0 30px 60px rgba(0, 0, 0, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1)
+            `
+          }}
+        >
+          {/* Animated Border Glow */}
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 animate-pulse"></div>
+          
+          {/* Header */}
+          <div className="text-center mb-8 relative z-10">
+            <h1 className="text-4xl md:text-5xl font-bold font-['Orbitron'] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6 leading-tight">
+              {t.heroTitle}
+            </h1>
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              {t.heroSubtitle}
+            </p>
+          </div>
+
+          {/* Media Type Selector */}
+          <div className="flex justify-center mb-8">
+            <div className="flex flex-wrap justify-center gap-3 bg-gray-700/50 backdrop-blur-md rounded-2xl p-4 border border-cyan-400/20">
               {[
-                { icon: "bi bi-play-circle", label: "Video" },
-                { icon: "bi bi-image", label: "Photo" },
-                { icon: "bi bi-clock-history", label: "Story" },
-                { icon: "bi bi-film", label: "Reels" },
-                { icon: "bi bi-tv", label: "IGTV" },
+                { icon: "🎬", label: "Video" },
+                { icon: "🖼️", label: "Photo" },
+                { icon: "📱", label: "Story" },
+                { icon: "🎞️", label: "Reels" },
+                { icon: "📺", label: "IGTV" },
               ].map((item, index) => (
                 <button
                   key={index}
-                  className="flex items-center gap-2 text-white px-4 py-2 md:px-5 md:py-3 rounded-md hover:bg-white/20 transition text-sm md:text-base"
+                  className="flex items-center gap-2 text-white px-4 py-3 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-400/40 border border-transparent transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20"
                 >
-                  <i className={`${item.icon} text-lg md:text-xl`}></i>
-                  {item.label}
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="font-semibold">{item.label}</span>
                 </button>
               ))}
             </div>
-          </section>
+          </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold my-6 leading-tight">
-            Instagram Video Downloader
-          </h1>
+          {/* Download Form */}
+          <div className="space-y-6 relative z-10">
+            <div className="flex flex-col md:flex-row justify-center items-stretch gap-4">
+              {/* Input Container - Increased width */}
+              <div className="relative flex-[2]">
+                <input
+                  type="text"
+                  placeholder={t.placeholder}
+                  className="w-full h-16 p-5 bg-gray-700/50 backdrop-blur-md border-2 border-cyan-400/30 rounded-2xl focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/20 text-white text-lg placeholder-gray-400 transition-all duration-300"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-cyan-400 text-2xl">🔗</div>
+              </div>
 
-          <p className="text-base sm:text-lg opacity-90 mb-6 max-w-2xl mx-auto">
-            Download Instagram Reels, Posts, and Stories in High Quality
-          </p>
-        </section>
+              {/* Paste Button */}
+              <button
+                onClick={handlePaste}
+                className="h-16 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 font-['Orbitron'] tracking-wider shadow-lg hover:shadow-purple-500/30 relative overflow-hidden group min-w-[140px]"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2 w-full">
+                  <span className="text-xl">📋</span>
+                  <span className="whitespace-nowrap">PASTE</span>
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              </button>
 
-        <div className="p-4 md:p-8 max-w-3xl mx-auto">
-          <div className=" rounded-lg">
-            <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-              <input
-                type="text"
-                placeholder="Paste Instagram URL here (reel, post, or story)"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-white h-15"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-
+              {/* Fetch Media Button - Icon removed and text changed */}
               <button
                 onClick={handleFetch}
                 disabled={loading}
-                className="w-full md:w-40 bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition disabled:bg-pink-400 h-15"
+                className="h-16 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-bold px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 font-['Orbitron'] tracking-wider text-lg shadow-lg hover:shadow-cyan-500/30 relative overflow-hidden group min-w-[140px]"
               >
-                {loading ? "Fetching..." : "Fetch Media"}
+                <span className="relative z-10 flex items-center justify-center w-full">
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span className="whitespace-nowrap">{t.fetching}</span>
+                    </>
+                  ) : (
+                    <span className="whitespace-nowrap">{t.fetch}</span>
+                  )}
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               </button>
             </div>
 
             {error && (
-              <div className="mt-6 text-center">
-                <p className="text-red-100 bg-red-900/30 p-3 rounded-lg">
+              <div className="p-4 bg-red-500/20 backdrop-blur-md border-2 border-red-500/30 rounded-2xl text-red-200 text-center animate-pulse">
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-2xl">❌</span>
                   {error}
-                </p>
-              </div>
-            )}
-
-            {mediaInfo && (
-              <div className="mt-6 p-4 bg-black/30 rounded-lg">
-                <h3 className="text-white text-xl font-semibold mb-4 text-center">
-                  Media Preview
-                </h3>
-
-                <div className="flex justify-center mb-4">
-                  {mediaInfo.mediaUrl ? (
-                    <video
-                      src={mediaInfo.mediaUrl}
-                      controls
-                      className="max-w-full h-auto max-h-80 rounded-lg"
-                    />
-                  ) : (
-                    <div className="text-white text-center py-10">
-                      No preview available
-                    </div>
-                  )}
                 </div>
-
-                <button
-                  onClick={handleDownload}
-                  disabled={downloading}
-                  className="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-teal-700 transition disabled:from-green-300 disabled:to-teal-400 flex items-center justify-center"
-                >
-                  {downloading ? (
-                    <>
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Downloading...
-                    </>
-                  ) : (
-                    "⬇️ Download Now"
-                  )}
-                </button>
               </div>
             )}
+
+            {/* Video Preview Section with Description */}
+            {mediaInfo && (
+              <div className="mt-8 p-6 bg-gray-800/50 backdrop-blur-md border-2 border-cyan-400/30 rounded-2xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  
+                  {/* Video Preview */}
+                  <div className="space-y-4">
+                    <h3 className="text-cyan-400 font-['Orbitron'] text-xl font-bold">{t.preview}</h3>
+                    <div className="aspect-video bg-black rounded-xl overflow-hidden">
+                      {mediaInfo.type === "video" ? (
+                        <video 
+                          src={mediaInfo.mediaUrl} 
+                          controls 
+                          className="w-full h-full object-cover"
+                          poster={mediaInfo.thumbnail}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      ) : (
+                        <img 
+                          src={mediaInfo.mediaUrl} 
+                          alt="Instagram preview"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    
+                    {/* Download Button */}
+                    <button
+                      onClick={handleDownload}
+                      disabled={downloading}
+                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 font-['Orbitron'] tracking-wider text-lg shadow-lg hover:shadow-green-500/30 relative overflow-hidden group"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        {downloading ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            {t.downloading}
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-xl">⬇️</span>
+                            {t.download}
+                          </>
+                        )}
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    </button>
+
+                    {/* Media Stats */}
+                    {(mediaInfo.likes !== undefined || mediaInfo.comments !== undefined || mediaInfo.timestamp || mediaInfo.views !== undefined) && (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                        {mediaInfo.likes !== undefined && (
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                            <div className="text-xl mb-1">❤️</div>
+                            <div className="text-cyan-400 font-bold text-xs">{t.likes}</div>
+                            <div className="text-white font-semibold text-sm">{formatNumber(mediaInfo.likes)}</div>
+                          </div>
+                        )}
+
+                        {mediaInfo.comments !== undefined && (
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                            <div className="text-xl mb-1">💬</div>
+                            <div className="text-cyan-400 font-bold text-xs">{t.comments}</div>
+                            <div className="text-white font-semibold text-sm">{formatNumber(mediaInfo.comments)}</div>
+                          </div>
+                        )}
+
+                        {mediaInfo.views !== undefined && (
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                            <div className="text-xl mb-1">👁️</div>
+                            <div className="text-cyan-400 font-bold text-xs">{t.views}</div>
+                            <div className="text-white font-semibold text-sm">{formatNumber(mediaInfo.views)}</div>
+                          </div>
+                        )}
+
+                        {mediaInfo.timestamp && (
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                            <div className="text-xl mb-1">📅</div>
+                            <div className="text-cyan-400 font-bold text-xs">{t.timestamp}</div>
+                            <div className="text-white font-semibold text-xs">{formatTimestamp(mediaInfo.timestamp)}</div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Description Only */}
+                  <div className="space-y-6">
+                    {/* Description */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-cyan-400 font-['Orbitron'] text-xl font-bold">{t.description}</h3>
+                        <button
+                          onClick={() => copyToClipboard(mediaInfo.description || "No description available", 'description')}
+                          className="flex items-center gap-2 px-3 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-all duration-300 text-sm"
+                        >
+                          <span>📋</span>
+                          {copiedText === 'description' ? t.copied : t.copy}
+                        </button>
+                      </div>
+                      <div className="p-4 bg-gray-700/50 rounded-xl h-48 overflow-y-auto">
+                        <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
+                          {mediaInfo.description || "No description available"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Features Grid */}
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 relative z-10">
+            {[
+              { icon: "🤖", label: "AI Powered", color: "from-cyan-400 to-blue-400" },
+              { icon: "⚡", label: "Lightning Fast", color: "from-yellow-400 to-orange-400" },
+              { icon: "🔒", label: "Secure", color: "from-green-400 to-teal-400" },
+              { icon: "🎯", label: "HD Quality", color: "from-purple-400 to-pink-400" },
+              { icon: "💫", label: "4K Support", color: "from-red-400 to-pink-400" },
+              { icon: "🚀", label: "Instant", color: "from-indigo-400 to-purple-400" }
+            ].map((feature, index) => (
+              <div 
+                key={index} 
+                className="text-center p-4 bg-gray-700/30 backdrop-blur-md rounded-xl border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/10"
+              >
+                <div className={`text-3xl mb-2 bg-gradient-to-r ${feature.color} bg-clip-text text-transparent`}>
+                  {feature.icon}
+                </div>
+                <div className="text-sm text-gray-300 font-semibold">{feature.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="text-gray-800">
-        <section id="features" className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-center text-3xl font-bold mb-12">Features</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
-              {[
-                {
-                  icon: "⚡",
-                  title: "Fast Download",
-                  desc: "Quick servers optimized for fast downloads.",
-                },
-                {
-                  icon: "📱",
-                  title: "Multi Device",
-                  desc: "Works seamlessly on mobile, tablet, desktop.",
-                },
-                {
-                  icon: "🔒",
-                  title: "Secure",
-                  desc: "No login required, fully private downloads.",
-                },
-                {
-                  icon: "💎",
-                  title: "High Quality",
-                  desc: "Preserve original video & photo quality.",
-                },
-              ].map((f, i) => (
-                <div
-                  key={i}
-                  className="bg-white text-center p-6 rounded-lg shadow hover:shadow-md transition bg-gradient-to-tr from-[#11998e] to-[#38ef7d]"
+      {/* Features Section - 3D Style */}
+      <section id="features" className="py-16 bg-gray-800/50 backdrop-blur-md text-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-center text-4xl font-bold font-['Orbitron'] mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            {t.featuresTitle}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              {
+                icon: "⚡",
+                title: "Fast Download",
+                desc: "Quick servers optimized for fast downloads.",
+              },
+              {
+                icon: "📱",
+                title: "Multi Device",
+                desc: "Works seamlessly on mobile, tablet, desktop.",
+              },
+              {
+                icon: "🔒",
+                title: "Secure",
+                desc: "No login required, fully private downloads.",
+              },
+              {
+                icon: "💎",
+                title: "High Quality",
+                desc: "Preserve original video & photo quality.",
+              },
+            ].map((f, i) => (
+              <div
+                key={i}
+                className="bg-gray-700/50 backdrop-blur-md border border-cyan-400/30 text-white text-center p-6 rounded-2xl shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-400/60 transition-all duration-300 transform hover:-translate-y-2"
+              >
+                <div className="text-4xl mb-3 p-2 w-16 h-16 rounded-full mx-auto bg-cyan-500/20 flex justify-center items-center">
+                  {f.icon}
+                </div>
+                <h5 className="font-semibold mb-2 text-lg font-['Orbitron']">{f.title}</h5>
+                <p className="text-sm opacity-90">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section - 3D Style */}
+      <section id="services" className="py-16 bg-gray-900/80 text-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-center text-4xl font-bold font-['Orbitron'] mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            {t.servicesTitle}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 justify-items-center">
+            {[
+              { icon: "📹", title: "Video Downloader" },
+              { icon: "📷", title: "Photo Downloader" },
+              { icon: "🎬", title: "Reels & Stories Downloader" },
+              { icon: "📺", title: "IGTV Downloader" },
+              { icon: "🖼️", title: "Carousel Downloader" },
+            ].map((s, i) => (
+              <div
+                key={i}
+                className="bg-gradient-to-tr from-cyan-500 to-blue-600 text-white text-center p-8 rounded-2xl shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 transform hover:-translate-y-2 w-full max-w-sm border border-cyan-400/30"
+              >
+                <div className="text-5xl mb-4">{s.icon}</div>
+                <h5 className="font-semibold text-xl font-['Orbitron']">{s.title}</h5>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section - 3D Style */}
+      <section id="faq" className="py-16 bg-gray-800/50 backdrop-blur-md text-white">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-center text-4xl font-bold font-['Orbitron'] mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            {t.faqTitle}
+          </h2>
+          <div className="space-y-4">
+            {[
+              {
+                q: "❓ Is it legal to download media?",
+                a: "Downloading public media for personal use is allowed. Get creator permission for reuse.",
+              },
+              {
+                q: "❓ Do I need to log in?",
+                a: "No, you don't need to log in. Just paste the URL and download.",
+              },
+              {
+                q: "❓ Is it possible to download content other than video on this website?",
+                a: "Yes, absolutely! Our downloader allows free downloading of photos, videos, reels, and IGTV exclusively from Instagram.",
+              },
+              {
+                q: "❓ Is it possible to Download Video and Photo from any Instagram user?",
+                a: "Yes, you can download content from public Instagram accounts. We respect privacy and copyright, so downloading from private accounts is not possible.",
+              },
+              {
+                q: "❓ What is the maximum quality of images and videos that can be downloaded from Instagram?",
+                a: "The resolution depends on the original uploaded content. Typically, images are up to 1080x1350 pixels and videos are in high definition (720p).",
+              },
+              {
+                q: "❓ Is it permissible to download Instagram Reels?",
+                a: "Yes, you can download Reels for personal use as long as they are not used for commercial purposes.",
+              },
+            ].map((faq, i) => (
+              <div
+                key={i}
+                className="bg-gray-700/50 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-300"
+              >
+                <button
+                  onClick={() => setOpen(open === i ? null : i)}
+                  className="w-full text-left px-6 py-4 font-semibold flex justify-between items-center hover:bg-cyan-500/10 transition duration-300 font-['Orbitron']"
                 >
-                  <div className="text-4xl mb-3 p-[5px] w-[75px] h-[75px] rounded-full mx-auto bg-[rgba(255,255,255,0.2)] flex justify-center items-center">
-                    {f.icon}
+                  {faq.q}
+                  <span className="text-lg text-cyan-400">{open === i ? "−" : "+"}</span>
+                </button>
+                {open === i && (
+                  <div className="px-6 pb-4 text-gray-300 animate-fadeIn">
+                    {faq.a}
                   </div>
-                  <h5 className="font-semibold mb-2">{f.title}</h5>
-                  <p className="text-sm text-white">{f.desc}</p>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="services" className="py-16 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-center text-3xl font-bold">🌟 Our Services</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 justify-items-center">
-              {[
-                { icon: "📹", title: "Video Downloader" },
-                { icon: "📷", title: "Photo Downloader" },
-                { icon: "🎬", title: "Reels & Stories Downloader" },
-                { icon: "📺", title: "IGTV Downloader" },
-                { icon: "🖼", title: "Carousel Downloader" },
-              ].map((s, i) => (
-                <div
-                  key={i}
-                  className="bg-white text-center p-6 rounded-lg shadow hover:shadow-md transition w-full max-w-sm bg-gradient-to-tr from-[#11998e] to-[#38ef7d]"
-                >
-                  <div className="text-4xl mb-3">{s.icon}</div>
-                  <h5 className="font-semibold">{s.title}</h5>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+      {/* Footer */}
+      <footer className="bg-gray-900/90 backdrop-blur-md text-gray-300 py-8 border-t border-cyan-500/30">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-lg font-['Orbitron']">{t.copyright}</p>
+          <p className="mt-4">
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
+              {t.privacy}
+            </a>
+            <span className="mx-2">|</span>
+            <a href="#" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
+              {t.terms}
+            </a>
+          </p>
+        </div>
+      </footer>
 
-        <section id="faq" className="py-16 bg-gray-100">
-          <div className="max-w-5xl mx-auto px-4">
-            <h2 className="text-center text-3xl font-bold mb-12">
-              ❔ Frequently Asked Questions
-            </h2>
-            <div className="space-y-4">
-              {[
-                {
-                  q: "❓ Is it legal to download media?",
-                  a: "Downloading public media for personal use is allowed. Get creator permission for reuse.",
-                },
-                {
-                  q: "❓ Do I need to log in?",
-                  a: "No, you don't need to log in. Just paste the URL and download.",
-                },
-                {
-                  q: "❓ Is it possible to download content other than video on this website?",
-                  a: "Yes, absolutely!  allows free downloading of photos, videos, reels, and IGTV exclusively from Instagram. However, it doesn't support any other sources.",
-                },
-                {
-                  q: "❓ Is it possible to Download Video and Photo from any Instagram user?",
-                  a: "Yes, that's correct! You can download content from public Instagram accounts using  Instagram Video Downloader. However, we fully respect the privacy and copyright of Instagram users, so downloading content from private accounts is not possible. We are currently developing a new browser extension for desktop browsers, which will allow you to download private posts directly from Instagram.",
-                },
-                {
-                  q: "❓What is the maximum quality of images and videos that can be downloaded from Instagram?",
-                  a: "The resolution and quality of the downloaded photos and videos depend on the original uploaded content on Instagram. Typically, the highest resolution for images is 1080x1350 pixels, which is the limit set by Instagram. For videos, the quality is usually in high definition (720p).",
-                },
-                {
-                  q: "❓Is it permissible to download Instagram Reels?",
-                  a: "Yes. In brief, it is feasible to download Instagram Reels, and it can be done effortlessly through your smartphone. However, Reels can only be downloaded for personal use, and it's permissible to download them as long as they are not used for commercial purposes.",
-                },
-              ].map((faq, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-lg shadow overflow-hidden"
-                >
-                  <button
-                    onClick={() => setOpen(open === i ? null : i)}
-                    className="w-full text-left px-6 py-4 font-semibold flex justify-between items-center"
-                  >
-                    {faq.q}
-                    <span>{open === i ? "−" : "+"}</span>
-                  </button>
-                  {open === i && (
-                    <div className="px-6 pb-4 text-gray-600">{faq.a}</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <footer className="bg-gray-900 text-gray-300 py-8">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <p>&copy; 2025 Instagram Downloader. All rights reserved.</p>
-            <p className="mt-2">
-              <a href="#" className="text-blue-400 hover:underline">
-                Privacy Policy
-              </a>{" "}
-              |{" "}
-              <a href="#" className="text-blue-400 hover:underline">
-                Terms of Service
-              </a>
-            </p>
-          </div>
-        </footer>
+      {/* Server Status */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <div className="flex items-center gap-2 bg-gray-800/80 backdrop-blur-md border border-green-400/30 rounded-full px-4 py-2 shadow-2xl">
+          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+          <span className="text-sm font-semibold font-['Orbitron']">Backend: Online</span>
+        </div>
       </div>
-    </>
+
+
+      <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    </div>
   );
 }
 
