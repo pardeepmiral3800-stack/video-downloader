@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import SeoHead from "./SeoHead";
 
 function App() {
   const [url, setUrl] = useState("");
@@ -18,7 +19,7 @@ function App() {
   // Language translations (same as your code)
   const translations = {
     en: {
-      navTitle: "NEO-INSTA",
+      navTitle: "MoboInsta",
       features: "Features",
       services: "Services",
       faq: "FAQ",
@@ -36,7 +37,7 @@ function App() {
       featuresTitle: "AI FEATURES",
       servicesTitle: "🌟 OUR SERVICES",
       faqTitle: "❔ FREQUENTLY ASKED QUESTIONS",
-      copyright: "© 2025 NEO-INSTA. All rights reserved.",
+      copyright: "© 2025 MoboInsta. All rights reserved.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
       likes: "Likes",
@@ -48,7 +49,7 @@ function App() {
       copied: "Copied!",
     },
     hi: {
-      navTitle: "नियो-इंस्टा",
+      navTitle: "मोबोइंस्टा",
       features: "विशेषताएं",
       services: "सेवाएं",
       faq: "सवाल-जवाब",
@@ -66,7 +67,7 @@ function App() {
       featuresTitle: "AI विशेषताएं",
       servicesTitle: "🌟 हमारी सेवाएं",
       faqTitle: "❔ अक्सर पूछे जाने वाले सवाल",
-      copyright: "© 2025 नियो-इंस्टा। सभी अधिकार सुरक्षित।",
+      copyright: "© 2025 मोबोइंस्टा। सभी अधिकार सुरक्षित।",
       privacy: "गोपनीयता नीति",
       terms: "सेवा की शर्तें",
       likes: "लाइक्स",
@@ -78,7 +79,7 @@ function App() {
       copied: "कॉपी किया गया!",
     },
     es: {
-      navTitle: "NEO-INSTA",
+      navTitle: "MoboInsta",
       features: "Características",
       services: "Servicios",
       faq: "Preguntas Frecuentes",
@@ -96,7 +97,7 @@ function App() {
       featuresTitle: "CARACTERÍSTICAS IA",
       servicesTitle: "🌟 NUESTROS SERVICIOS",
       faqTitle: "❔ PREGUNTAS FRECUENTES",
-      copyright: "© 2025 NEO-INSTA. Todos los derechos reservados.",
+      copyright: "© 2025 MoboInsta. Todos los derechos reservados.",
       privacy: "Política de Privacidad",
       terms: "Términos de Servicio",
       likes: "Me gusta",
@@ -108,7 +109,7 @@ function App() {
       copied: "¡Copiado!",
     },
     fr: {
-      navTitle: "NEO-INSTA",
+      navTitle: "MoboInsta",
       features: "Fonctionnalités",
       services: "Services",
       faq: "FAQ",
@@ -126,7 +127,7 @@ function App() {
       featuresTitle: "FONCTIONNALITÉS IA",
       servicesTitle: "🌟 NOS SERVICES",
       faqTitle: "❔ QUESTIONS FRÉQUENTES",
-      copyright: "© 2025 NEO-INSTA. Tous droits réservés.",
+      copyright: "© 2025 MoboInsta. Tous droits réservés.",
       privacy: "Politique de Confidentialité",
       terms: "Conditions d'Utilisation",
       likes: "J'aime",
@@ -138,7 +139,7 @@ function App() {
       copied: "Copié!",
     },
     de: {
-      navTitle: "NEO-INSTA",
+      navTitle: "MoboInsta",
       features: "Funktionen",
       services: "Dienstleistungen",
       faq: "FAQ",
@@ -156,7 +157,7 @@ function App() {
       featuresTitle: "KI-FUNKTIONEN",
       servicesTitle: "🌟 UNSERE DIENSTLEISTUNGEN",
       faqTitle: "❔ HÄUFIG GESTELLTE FRAGEN",
-      copyright: "© 2025 NEO-INSTA. Alle Rechte vorbehalten.",
+      copyright: "© 2025 MoboInsta. Alle Rechte vorbehalten.",
       privacy: "Datenschutzrichtlinie",
       terms: "Nutzungsbedingungen",
       likes: "Likes",
@@ -168,7 +169,7 @@ function App() {
       copied: "Kopiert!",
     },
     ar: {
-      navTitle: "نيو-إنستا",
+      navTitle: "موبوإنستا",
       features: "الميزات",
       services: "الخدمات",
       faq: "الأسئلة الشائعة",
@@ -186,7 +187,7 @@ function App() {
       featuresTitle: "ميزات الذكاء الاصطناعي",
       servicesTitle: "🌟 خدماتنا",
       faqTitle: "❔ الأسئلة الشائعة",
-      copyright: "© 2025 نيو-إنستا. جميع الحقوق محفوظة.",
+      copyright: "© 2025 موبوإنستا. جميع الحقوق محفوظة.",
       privacy: "سياسة الخصوصية",
       terms: "شروط الخدمة",
       likes: "الإعجابات",
@@ -378,6 +379,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden relative font-['Rajdhani']">
+      <SeoHead language={language} pageType="home" />
       <FloatingBackground />
       
       {/* 3D Navigation */}
@@ -844,11 +846,11 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-lg font-['Orbitron']">{t.copyright}</p>
           <p className="mt-4">
-            <a href="#" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
+            <a href="/privacy.html" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
               {t.privacy}
             </a>
             <span className="mx-2">|</span>
-            <a href="#" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
+            <a href="/terms.html" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
               {t.terms}
             </a>
           </p>
