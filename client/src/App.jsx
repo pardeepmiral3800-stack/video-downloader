@@ -250,7 +250,7 @@ function App() {
     setMediaInfo(null);
 
     try {
-      const endpoint = `http://localhost:5000/instagram?url=${encodeURIComponent(url)}`;
+      const endpoint = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/instagram?url=${encodeURIComponent(url)}`;
       const res = await fetch(endpoint);
       const data = await res.json();
 

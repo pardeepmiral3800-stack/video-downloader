@@ -1,29 +1,29 @@
-# CLS Improvement Tasks
+# Hosting Preparation Tasks
 
-## 1. Reserve Space for Media Preview Section ✅
-- Add min-height to the media preview container to prevent layout shifts when content loads
-- Use placeholder/skeleton for media area
+## 1. Update Server Package.json ✅
+- Add "start" script to run server.js
 
-## 2. Add Explicit Aspect-Ratios to Media Elements ✅
-- Add aspect-video class to video container
-- Ensure images have consistent aspect ratios
-- Add loading="lazy" attribute to media elements
+## 2. Update Server.js for Production ✅
+- Use process.env.PORT instead of hardcoded 5000
+- Add production-ready configuration
 
-## 3. Ensure Consistent Grid Item Heights ✅
-- Add min-height to features grid items
-- Add min-height to media type selector buttons
-- Ensure stats cards have consistent heights
+## 3. Update Client App.jsx for Production API ✅
+- Replace localhost:5000 with environment variable
+- Add fallback for development
 
-## 4. Optimize Font Loading ✅
-- Add font-display: swap to font-face declarations
-- Preload critical fonts in HTML head
-- Use font-display: optional for non-critical fonts
+## 4. Update Client Package.json ✅
+- Add "build" script for production build
 
-## 5. Use Transform-Only Hover Effects ✅
-- Replace hover:scale with transform: scale() in CSS
-- Ensure hover effects don't trigger layout recalculations
+## 5. Test Locally ✅
+- Run backend on different port
+- Test frontend with updated API URL
 
-## 6. Add Loading Attributes and Optimize Dynamic Content ✅
-- Add loading="lazy" to images and videos
-- Optimize state changes to minimize layout shifts
-- Reserve space for error messages and loading states
+## 6. Deploy Backend to Heroku ✅
+- Create Heroku app
+- Deploy server code
+- Get production URL
+
+## 7. Deploy Frontend to Vercel ✅
+- Build client for production
+- Deploy to Vercel with backend URL
+- Configure environment variables
