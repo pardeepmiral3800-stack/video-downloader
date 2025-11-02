@@ -145,12 +145,12 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from client build
-app.use(express.static(path.join(process.cwd(), '../client/dist')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 // Serve index.html for all non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api') && !req.path.startsWith('/instagram') && !req.path.startsWith('/youtube')) {
-    res.sendFile(path.join(process.cwd(), '../client/dist/index.html'));
+    res.sendFile(path.join(process.cwd(), 'public/index.html'));
   }
 });
 

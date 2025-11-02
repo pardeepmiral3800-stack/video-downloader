@@ -5,7 +5,7 @@ nixPkgs = ["nodejs_20"]
 cmds = ["npm ci", "cd client && npm ci"]
 
 [phases.build]
-cmds = ["cd client && npm run build"]
+cmds = ["cd client && npm run build", "cp -r client/dist server/public"]
 
 [start]
 cmd = "cd server && npm start"
