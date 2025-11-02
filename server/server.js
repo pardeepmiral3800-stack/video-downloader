@@ -151,6 +151,8 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api') && !req.path.startsWith('/instagram') && !req.path.startsWith('/youtube')) {
     res.sendFile(path.join(process.cwd(), 'public/index.html'));
+  } else {
+    res.status(404).json({ error: 'Not found' });
   }
 });
 
