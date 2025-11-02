@@ -145,9 +145,7 @@ app.use(cors());
 app.use(express.json());
 
 // Health check endpoint
-app.get("/", (req, res) => {
-  res.json({ status: "ok", message: "Video Downloader API is running" });
-});
+
 
 // Security headers middleware
 app.use((req, res, next) => {
@@ -248,9 +246,7 @@ app.get("/instagram/download", async (req, res) => {
   }
 });
  
-app.get("/", (req, res) => {
-  res.json({ status: "ok", message: "Video Downloader API is running" });
-});
+
 
 app.listen(PORT, "0.0.0.0", () =>
   console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
