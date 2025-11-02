@@ -156,6 +156,7 @@ app.get('*', (req, res) => {
   }
 });
 
+// Health check endpoint
 // Security headers middleware
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
