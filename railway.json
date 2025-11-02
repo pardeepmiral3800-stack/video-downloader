@@ -1,22 +1,12 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS"
+    "builder": "NIXPACKS",
+    "buildCommand": "cd client && npm install && npm run build"
   },
   "deploy": {
-    "runtime": "V2",
-    "numReplicas": 1,
-    "startCommand": "npm start",
-    "healthcheckPath": "/instagram?url=https://www.instagram.com/p/test",
-    "sleepApplication": false,
-    "useLegacyStacker": false,
-    "multiRegionConfig": {
-      "us-west2": {
-        "numReplicas": 1
-      }
-    },
-    "restartPolicyType": "ON_FAILURE",
-    "healthcheckTimeout": 300,
-    "restartPolicyMaxRetries": 10
+    "startCommand": "cd server && npm start",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 30
   }
 }
