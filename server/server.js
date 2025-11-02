@@ -145,7 +145,9 @@ app.use(cors());
 app.use(express.json());
 
 // Health check endpoint
-
+app.get("/", (req, res) => {
+  res.send('OK');
+});
 
 // Security headers middleware
 app.use((req, res, next) => {
