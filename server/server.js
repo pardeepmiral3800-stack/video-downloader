@@ -134,6 +134,7 @@
 
 import express from "express";
 import cors from "cors";
+import path from "path";
 import ytdl from "@distube/ytdl-core";
 import { instagramGetUrl } from "instagram-url-direct";
 
@@ -142,6 +143,16 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from client build
+app.use(express.static(path.join(process.cwd(), '../client/dist')));
+
+// Serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/instagram') && !req.path.startsWith('/youtube')) {
+    res.sendFile(path.join(process.cwd(), '../client/dist/index.html'));
+  }
+});
 
 // Security headers middleware
 app.use((req, res, next) => {
