@@ -18,7 +18,6 @@
     },
     "restartPolicyType": "ON_FAILURE",
     "healthcheckTimeout": 300,
-    "restartPolicyMaxRetries": 10,
-    "buildCommand": "npm run build"
+    "restartPolicyMaxRetries": 10
   }
 }
