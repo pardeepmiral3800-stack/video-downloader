@@ -230,6 +230,10 @@ app.get("/instagram/download", async (req, res) => {
   }
 });
  
-app.listen(PORT, () =>
-  console.log(`✅ Server running at http://localhost:${PORT}`)
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "Video Downloader API is running" });
+});
+
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
 );
