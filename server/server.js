@@ -138,7 +138,7 @@ import ytdl from "@distube/ytdl-core";
 import { instagramGetUrl } from "instagram-url-direct";
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -152,6 +152,11 @@ app.use((req, res, next) => {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   next();
+});
+
+// Health check route
+app.get("/", (req, res) => {
+  res.json({ status: "ok" });
 });
  
  
