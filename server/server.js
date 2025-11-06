@@ -159,6 +159,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
  
@@ -243,6 +248,6 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
  
-app.listen(PORT, () =>
-  console.log(`✅ Server running at http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () =>
+  console.log(`✅ Server running on port ${PORT}`)
 );
