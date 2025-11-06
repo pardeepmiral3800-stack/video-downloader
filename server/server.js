@@ -136,6 +136,11 @@ import express from "express";
 import cors from "cors";
 import ytdl from "@distube/ytdl-core";
 import { instagramGetUrl } from "instagram-url-direct";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -153,6 +158,9 @@ app.use((req, res, next) => {
   res.setHeader('Expires', '0');
   next();
 });
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
  
  
 app.get("/youtube/download", (req, res) => {
@@ -228,6 +236,11 @@ app.get("/instagram/download", async (req, res) => {
     console.error("Instagram Download Error:", err);
     res.status(500).json({ error: "Failed to download media" });
   }
+});
+
+// Catch-all route to serve index.html for client-side routing
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
  
 app.listen(PORT, () =>
