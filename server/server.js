@@ -159,7 +159,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check endpoint
+// Health check endpoint - must be before static files
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -243,11 +243,31 @@ app.get("/instagram/download", async (req, res) => {
   }
 });
 
-// Catch-all route to serve index.html for client-side routing
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// Catch-all route to serve index.html for client-side routing (only for non-API routes)
+app.use((req, res, next) => {
+  // Only serve index.html for non-API routes
+  if (!req.path.startsWith('/youtube') && !req.path.startsWith('/instagram') && !req.path.startsWith('/health')) {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  } else {
+    res.status(404).json({ error: 'Not found' });
+  }
 });
  
-app.listen(PORT, '0.0.0.0', () =>
-  console.log(`✅ Server running on port ${PORT}`)
-);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🏥 Health check available at http://0.0.0.0:${PORT}/health`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  console.error('❌ Server error:', error);
+  process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+});
