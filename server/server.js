@@ -136,6 +136,11 @@ import express from "express";
 import cors from "cors";
 import ytdl from "@distube/ytdl-core";
 import { instagramGetUrl } from "instagram-url-direct";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -153,6 +158,14 @@ app.use((req, res, next) => {
   res.setHeader('Expires', '0');
   next();
 });
+
+// Health check endpoint - must be before static files
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
  
  
 app.get("/youtube/download", (req, res) => {
@@ -229,7 +242,27 @@ app.get("/instagram/download", async (req, res) => {
     res.status(500).json({ error: "Failed to download media" });
   }
 });
+
+// Catch-all route to serve index.html for client-side routing
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
  
-app.listen(PORT, () =>
-  console.log(`✅ Server running at http://localhost:${PORT}`)
-);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🏥 Health check available at http://0.0.0.0:${PORT}/health`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  console.error('❌ Server error:', error);
+  process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+});
