@@ -132,6 +132,7 @@
 // app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}`));
 
 
+
 import express from "express";
 import cors from "cors";
 import ytdl from "@distube/ytdl-core";
@@ -160,27 +161,25 @@ app.use((_req, res, next) => {
   next();
 });
 
-// Health check route
-app.get('/*', (_req, res) => {
+// Health check route - FIXED: Use specific path instead of catch-all
+app.get('/health', (_req, res) => {
   res.send('Server is running!');
 });
-async (_params) => {
-  
-  
-}// Serve static files from the public directory
+
+// Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
- 
- 
+
 app.get("/youtube/download", (req, res) => {
   const url = req.query.url;
   const itag = req.query.itag;
- 
+
   if (!url || !ytdl.validateURL(url))
     return res.status(400).json({ error: "Invalid URL" });
- 
+
   res.header("Content-Disposition", 'attachment; filename="video.mp4"');
- 
+
   if (itag) {
+   
    
     ytdl(url, { quality: itag }).pipe(res);
   } else {
@@ -188,32 +187,32 @@ app.get("/youtube/download", (req, res) => {
     ytdl(url, { quality: "highest" }).pipe(res);
   }
 });
- 
+
 // ---------------------- Instagram Reel ----------------------
 app.get("/instagram", async (req, res) => {
   try {
     const url = req.query.url;
     if (!url) return res.status(400).json({ error: "URL required" });
- 
+
     if (!url.includes("instagram.com")) {
       return res.status(400).json({ error: "Invalid Instagram URL" });
     }
- 
+
     const result = await instagramGetUrl(url);
- 
+
     if (!result.url_list || result.url_list.length === 0) {
       return res.status(404).json({
         error: "No media found. This might be private or the URL is incorrect."
       });
     }
- 
+
     const mediaUrl = result.url_list[0];
- 
+
     // type detect करना (photo या video)
     let type = "unknown";
     if (mediaUrl.includes(".mp4")) type = "video";
     else if (mediaUrl.includes(".jpg") || mediaUrl.includes(".png")) type = "image";
- 
+
     res.json({
       success: true,
       mediaUrl,
@@ -224,20 +223,20 @@ app.get("/instagram", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch media. Please try again later." });
   }
 });
- 
+
 app.get("/instagram/download", async (req, res) => {
   try {
     const url = req.query.url;
     if (!url) return res.status(400).json({ error: "URL required" });
- 
+
     const result = await instagramGetUrl(url);
- 
+
     if (!result.url_list || result.url_list.length === 0) {
       return res.status(404).json({ error: "No media found" });
     }
- 
+
     const mediaUrl = result.url_list[0];
- 
+
     // Direct redirect कर दो (browser photo/video handle कर लेगा)
     res.redirect(mediaUrl);
   } catch (err) {
@@ -245,16 +244,16 @@ app.get("/instagram/download", async (req, res) => {
     res.status(500).json({ error: "Failed to download media" });
   }
 });
- 
+
 // Catch-all handler: send back index.html for any non-API GET routes
-app.use("*", (req, res, next) => {
-  if (req.method === 'GET') {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-  } else {
-    next();
-  }
+// FIXED: Use '/*' instead of '*' and place it at the end
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, '0.0.0.0', () =>
+apconsole.log(`✅ Server running at http://0.0.0.0:${PORT}`)
+);console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
+);console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
+);p.listen(PORT, '0.0.0.0', () =>
   console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
 );
