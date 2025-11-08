@@ -150,7 +150,7 @@ app.use(cors());
 app.use(express.json());
 
 // Security headers middleware
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
   // For API responses, set no-cache to prevent caching sensitive data
@@ -161,11 +161,13 @@ app.use((req, res, next) => {
 });
 
 // Health check route
-app.get("/", (req, res) => {
-  res.json({ status: "ok" });
+app.get('/*', (_req, res) => {
+  res.send('Server is running!');
 });
-
-// Serve static files from the public directory
+async (_params) => {
+  
+  
+}// Serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
  
  
