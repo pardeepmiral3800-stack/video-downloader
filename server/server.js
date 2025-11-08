@@ -136,6 +136,7 @@ import express from "express";
 import cors from "cors";
 import ytdl from "@distube/ytdl-core";
 import { instagramGetUrl } from "instagram-url-direct";
+import axios from "axios";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -191,34 +192,65 @@ app.get("/instagram", async (req, res) => {
   try {
     const url = req.query.url;
     if (!url) return res.status(400).json({ error: "URL required" });
- 
+
     if (!url.includes("instagram.com")) {
       return res.status(400).json({ error: "Invalid Instagram URL" });
     }
- 
+
+    // Get media URLs using instagram-url-direct
     const result = await instagramGetUrl(url);
- 
+
     if (!result.url_list || result.url_list.length === 0) {
       return res.status(404).json({
-        error: "No media found. This might be private or the URL is incorrect."
+        error: "No media found. This might be private or the URL is incorrect.",
       });
     }
- 
-    const mediaUrl = result.url_list[0];
- 
-    // type detect करना (photo या video)
-    let type = "unknown";
-    if (mediaUrl.includes(".mp4")) type = "video";
-    else if (mediaUrl.includes(".jpg") || mediaUrl.includes(".png")) type = "image";
- 
-    res.json({
+
+    // Pick best quality video/image
+    let mediaUrl = result.url_list[0];
+    let bestQuality = 0;
+
+    for (const u of result.url_list) {
+      if (u.includes(".mp4")) {
+        const qualityMatch = u.match(/\d+x\d+/);
+        if (qualityMatch) {
+          const [width, height] = qualityMatch[0].split("x").map(Number);
+          const totalPixels = width * height;
+          if (totalPixels > bestQuality) {
+            bestQuality = totalPixels;
+            mediaUrl = u;
+          }
+        }
+      }
+    }
+
+    // Determine media type
+    const type = mediaUrl.includes(".mp4") ? "video" : "image";
+
+    // Fetch additional details (likes, comments, caption, timestamp)
+    const mediaDetails = await fetchInstagramDetails(url);
+
+    const responseData = {
       success: true,
       mediaUrl,
-      type
-    });
+      type,
+      alternatives: result.url_list,
+      likes: mediaDetails?.likes || 0,
+      comments: mediaDetails?.comments || [],
+      views: mediaDetails?.views || 0,
+      timestamp: mediaDetails?.timestamp || null,
+      caption: mediaDetails?.caption || "",
+      username: mediaDetails?.username || "",
+      isVideo: mediaDetails?.isVideo || (type === "video"),
+    };
+
+    res.json(responseData);
   } catch (err) {
-    console.error("Instagram Error:", err);
-    res.status(500).json({ error: "Failed to fetch media. Please try again later." });
+    console.error("Instagram Error:", err.message);
+    res.status(500).json({
+      error: "Failed to fetch media. Please try again later.",
+      details: err.message,
+    });
   }
 });
  
