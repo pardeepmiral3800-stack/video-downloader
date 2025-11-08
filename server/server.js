@@ -1,63 +1,52 @@
-// import express from "express";
-// import cors from "cors";
-// import { instagramGetUrl } from "instagram-url-direct";
-// import axios from "axios";
+// Function to fetch Instagram post details (top 5 comments, likes, etc.)
+const fetchInstagramDetails = async (url) => {
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      },
+    });
 
-// const app = express();
-// const PORT = 5000;
+    const html = response.data;
+    const scriptRegex = /window\._sharedData\s*=\s*({.+?});<\/script>/;
+    const match = html.match(scriptRegex);
 
-// app.use(cors());
-// app.use(express.json());
+    if (match && match[1]) {
+      const sharedData = JSON.parse(match[1]);
+      const shortcodeMedia =
+        sharedData?.entry_data?.PostPage?.[0]?.graphql?.shortcode_media;
 
-// // Function to fetch Instagram post details (top 5 comments, likes, etc.)
-// const fetchInstagramDetails = async (url) => {
-//   try {
-//     const response = await axios.get(url, {
-//       headers: {
-//         "User-Agent":
-//           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-//       },
-//     });
+      if (shortcodeMedia) {
+        // Top 5 comments
+        const topComments = shortcodeMedia?.edge_media_to_parent_comment?.edges
+          ?.slice(0, 5)
+          .map((c) => ({
+            username: c.node.owner.username,
+            text: c.node.text,
+          })) || [];
 
-//     const html = response.data;
-//     const scriptRegex = /window\._sharedData\s*=\s*({.+?});<\/script>/;
-//     const match = html.match(scriptRegex);
+        return {
+          likes: shortcodeMedia?.edge_media_preview_like?.count || 0,
+          comments: topComments,
+          views: shortcodeMedia?.video_view_count || 0,
+          timestamp: shortcodeMedia?.taken_at_timestamp
+            ? new Date(shortcodeMedia.taken_at_timestamp * 1000).toISOString()
+            : null,
+          caption:
+            shortcodeMedia?.edge_media_to_caption?.edges?.[0]?.node?.text || "",
+          username: shortcodeMedia?.owner?.username || "",
+          isVideo: shortcodeMedia?.is_video || false,
+        };
+      }
+    }
 
-//     if (match && match[1]) {
-//       const sharedData = JSON.parse(match[1]);
-//       const shortcodeMedia =
-//         sharedData?.entry_data?.PostPage?.[0]?.graphql?.shortcode_media;
-
-//       if (shortcodeMedia) {
-//         // Top 5 comments
-//         const topComments = shortcodeMedia?.edge_media_to_parent_comment?.edges
-//           ?.slice(0, 5)
-//           .map((c) => ({
-//             username: c.node.owner.username,
-//             text: c.node.text,
-//           })) || [];
-
-//         return {
-//           likes: shortcodeMedia?.edge_media_preview_like?.count || 0,
-//           comments: topComments,
-//           views: shortcodeMedia?.video_view_count || 0,
-//           timestamp: shortcodeMedia?.taken_at_timestamp
-//             ? new Date(shortcodeMedia.taken_at_timestamp * 1000).toISOString()
-//             : null,
-//           caption:
-//             shortcodeMedia?.edge_media_to_caption?.edges?.[0]?.node?.text || "",
-//           username: shortcodeMedia?.owner?.username || "",
-//           isVideo: shortcodeMedia?.is_video || false,
-//         };
-//       }
-//     }
-
-//     return null;
-//   } catch (error) {
-//     console.error("Error fetching Instagram details:", error.message);
-//     return null;
-//   }
-// };
+    return null;
+  } catch (error) {
+    console.error("Error fetching Instagram details:", error.message);
+    return null;
+  }
+};
 
 // // Instagram endpoint
 // app.get("/instagram", async (req, res) => {
