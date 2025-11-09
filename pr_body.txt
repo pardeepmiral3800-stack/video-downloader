@@ -1,0 +1,16 @@
+This PR fixes the health check endpoint that was failing on Railway deployment.
+
+## Changes Made
+
+- **Downgraded Express**: Changed from Express 5.x to 4.19.2 to resolve compatibility issues with Railway's deployment environment
+- **Dynamic Port Binding**: Updated server.js to use `process.env.PORT || 5000` for proper port assignment in deployment
+- **ES Module Conversion**: Converted index.js from CommonJS require() to ES6 import syntax
+- **Health Check Script**: Added npm script for testing the health endpoint locally
+
+## Testing
+
+The health check endpoint now responds correctly with `{"status":"ok"}` when accessed via GET request to the root path "/".
+
+## Deployment Notes
+
+These changes ensure the application starts correctly on Railway and passes health checks required for deployment.
