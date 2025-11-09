@@ -40,6 +40,7 @@ function App() {
       copyright: "© 2025 MoboInsta. All rights reserved.",
       privacy: "Privacy Policy",
       terms: "Terms of Service",
+      contact: "Contact Us",
       likes: "Likes",
       comments: "Comments",
       timestamp: "Posted on",
@@ -70,6 +71,7 @@ function App() {
       copyright: "© 2025 मोबोइंस्टा। सभी अधिकार सुरक्षित।",
       privacy: "गोपनीयता नीति",
       terms: "सेवा की शर्तें",
+      contact: "हमसे संपर्क करें",
       likes: "लाइक्स",
       comments: "कमेंट्स",
       timestamp: "पोस्ट की तारीख",
@@ -100,6 +102,7 @@ function App() {
       copyright: "© 2025 MoboInsta. Todos los derechos reservados.",
       privacy: "Política de Privacidad",
       terms: "Términos de Servicio",
+      contact: "Contáctanos",
       likes: "Me gusta",
       comments: "Comentarios",
       timestamp: "Publicado el",
@@ -130,6 +133,7 @@ function App() {
       copyright: "© 2025 MoboInsta. Tous droits réservés.",
       privacy: "Politique de Confidentialité",
       terms: "Conditions d'Utilisation",
+      contact: "Nous contacter",
       likes: "J'aime",
       comments: "Commentaires",
       timestamp: "Publié le",
@@ -160,6 +164,7 @@ function App() {
       copyright: "© 2025 MoboInsta. Alle Rechte vorbehalten.",
       privacy: "Datenschutzrichtlinie",
       terms: "Nutzungsbedingungen",
+      contact: "Kontakt",
       likes: "Likes",
       comments: "Kommentare",
       timestamp: "Veröffentlicht am",
@@ -190,6 +195,7 @@ function App() {
       copyright: "© 2025 موبوإنستا. جميع الحقوق محفوظة.",
       privacy: "سياسة الخصوصية",
       terms: "شروط الخدمة",
+      contact: "اتصل بنا",
       likes: "الإعجابات",
       comments: "التعليقات",
       timestamp: "نشر في",
@@ -244,7 +250,7 @@ function App() {
     setMediaInfo(null);
 
     try {
-      const endpoint = `http://localhost:5000/instagram?url=${encodeURIComponent(url)}`;
+      const endpoint = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/instagram?url=${encodeURIComponent(url)}`;
       const res = await fetch(endpoint);
       const data = await res.json();
 
@@ -405,20 +411,20 @@ function App() {
             </svg>
           </button>
 
-          <div className="hidden lg:flex lg:items-center space-x-8">
+          <div className="hidden lg:flex lg:items-center space-x-8" style={{ width: 'fit-content' }}>
             {['features', 'services', 'faq'].map((item) => (
-              <a 
-                key={item} 
-                href={`#${item}`} 
+              <a
+                key={item}
+                href={`#${item}`}
                 className="relative group text-lg font-semibold hover:text-cyan-400 transition-all duration-300 hover:scale-110"
               >
                 {t[item]}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300"></span>
               </a>
             ))}
-            
-            <select 
-              value={language} 
+
+            <select
+              value={language}
               onChange={handleLanguageChange}
               className="bg-gray-700/50 border border-cyan-400/30 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 backdrop-blur-md"
             >
@@ -472,7 +478,7 @@ function App() {
 
       {/* Main 3D Content */}
       <div className="pt-32 pb-16 px-4 min-h-screen flex items-center justify-center">
-        <div 
+        <div
           ref={mainCardRef}
           className="w-full max-w-6xl bg-gray-800/40 backdrop-blur-2xl border border-cyan-500/30 rounded-3xl p-8 transition-all duration-300 relative overflow-hidden static-3d-card"
           style={{
@@ -480,14 +486,15 @@ function App() {
               0 0 80px rgba(0, 242, 254, 0.1),
               0 30px 60px rgba(0, 0, 0, 0.5),
               inset 0 1px 0 rgba(255, 255, 255, 0.1)
-            `
+            `,
+            minHeight: 'auto'
           }}
         >
           {/* Animated Border Glow */}
           <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 animate-pulse"></div>
           
           {/* Header */}
-          <div className="text-center mb-8 relative z-10">
+          <div className="text-center mb-8 relative z-10" style={{ minHeight: '200px' }}>
             <h1 className="text-4xl md:text-5xl font-bold font-['Orbitron'] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6 leading-tight">
               {t.heroTitle}
             </h1>
@@ -497,8 +504,8 @@ function App() {
           </div>
 
           {/* Media Type Selector */}
-          <div className="flex justify-center mb-8">
-            <div className="flex flex-wrap justify-center gap-3 bg-gray-700/50 backdrop-blur-md rounded-2xl p-4 border border-cyan-400/20">
+          <div className="flex justify-center mb-8" style={{ minHeight: '120px' }}>
+            <div className="flex flex-wrap justify-center gap-3 bg-gray-700/50 backdrop-blur-md rounded-2xl p-4 border border-cyan-400/20" style={{ minHeight: '88px' }}>
               {[
                 { icon: "🎬", label: "Video" },
                 { icon: "🖼️", label: "Photo" },
@@ -508,7 +515,8 @@ function App() {
               ].map((item, index) => (
                 <button
                   key={index}
-                  className="flex items-center gap-2 text-white px-4 py-3 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-400/40 border border-transparent transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/20"
+                  className="flex items-center gap-2 text-white px-4 py-3 rounded-xl hover:bg-cyan-500/20 hover:border-cyan-400/40 border border-transparent transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20 transform hover:scale-105"
+                  style={{ minWidth: 'fit-content', minHeight: '48px' }}
                 >
                   <span className="text-xl">{item.icon}</span>
                   <span className="font-semibold">{item.label}</span>
@@ -518,8 +526,8 @@ function App() {
           </div>
 
           {/* Download Form */}
-          <div className="space-y-6 relative z-10">
-            <div className="flex flex-col md:flex-row justify-center items-stretch gap-4">
+          <div className="space-y-6 relative z-10" style={{ minHeight: '300px' }}>
+            <div className="flex flex-col md:flex-row justify-center items-stretch gap-4" style={{ minHeight: 'auto' }}>
               {/* Input Container - Increased width */}
               <div className="relative flex-[2]">
                 <input
@@ -535,7 +543,7 @@ function App() {
               {/* Paste Button */}
               <button
                 onClick={handlePaste}
-                className="h-16 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 font-['Orbitron'] tracking-wider shadow-lg hover:shadow-purple-500/30 relative overflow-hidden group min-w-[140px]"
+                className="h-16 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 font-['Orbitron'] tracking-wider shadow-lg hover:shadow-purple-500/30 relative overflow-hidden group w-full md:w-[140px]"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2 w-full">
                   <span className="text-xl">📋</span>
@@ -548,7 +556,7 @@ function App() {
               <button
                 onClick={handleFetch}
                 disabled={loading}
-                className="h-16 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-bold px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 font-['Orbitron'] tracking-wider text-lg shadow-lg hover:shadow-cyan-500/30 relative overflow-hidden group min-w-[140px]"
+                className="h-16 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-bold px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 font-['Orbitron'] tracking-wider text-lg shadow-lg hover:shadow-cyan-500/30 relative overflow-hidden group w-full md:w-[140px]"
               >
                 <span className="relative z-10 flex items-center justify-center w-full">
                   {loading ? (
@@ -568,7 +576,7 @@ function App() {
             </div>
 
             {error && (
-              <div className="p-4 bg-red-500/20 backdrop-blur-md border-2 border-red-500/30 rounded-2xl text-red-200 text-center animate-pulse">
+              <div className="p-4 bg-red-500/20 backdrop-blur-md border-2 border-red-500/30 rounded-2xl text-red-200 text-center animate-pulse" style={{ minHeight: '72px' }}>
                 <div className="flex items-center justify-center gap-3">
                   <span className="text-2xl">❌</span>
                   {error}
@@ -578,7 +586,7 @@ function App() {
 
             {/* Video Preview Section with Description */}
             {mediaInfo && (
-              <div className="mt-8 p-6 bg-gray-800/50 backdrop-blur-md border-2 border-cyan-400/30 rounded-2xl">
+              <div className="mt-8 p-6 bg-gray-800/50 backdrop-blur-md border-2 border-cyan-400/30 rounded-2xl" style={{ minHeight: '600px' }}>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   
                   {/* Video Preview */}
@@ -586,19 +594,22 @@ function App() {
                     <h3 className="text-cyan-400 font-['Orbitron'] text-xl font-bold">{t.preview}</h3>
                     <div className="aspect-video bg-black rounded-xl overflow-hidden">
                       {mediaInfo.type === "video" ? (
-                        <video 
-                          src={mediaInfo.mediaUrl} 
-                          controls 
+                        <video
+                          src={mediaInfo.mediaUrl}
+                          controls
                           className="w-full h-full object-cover"
                           poster={mediaInfo.thumbnail}
+                          loading="lazy"
+                          preload="metadata"
                         >
                           Your browser does not support the video tag.
                         </video>
                       ) : (
-                        <img 
-                          src={mediaInfo.mediaUrl} 
+                        <img
+                          src={mediaInfo.mediaUrl}
                           alt="Instagram preview"
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       )}
                     </div>
@@ -632,7 +643,7 @@ function App() {
                     {(mediaInfo.likes !== undefined || mediaInfo.comments !== undefined || mediaInfo.timestamp || mediaInfo.views !== undefined) && (
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                         {mediaInfo.likes !== undefined && (
-                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20" style={{ minHeight: '80px' }}>
                             <div className="text-xl mb-1">❤️</div>
                             <div className="text-cyan-400 font-bold text-xs">{t.likes}</div>
                             <div className="text-white font-semibold text-sm">{formatNumber(mediaInfo.likes)}</div>
@@ -640,7 +651,7 @@ function App() {
                         )}
 
                         {mediaInfo.comments !== undefined && (
-                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20" style={{ minHeight: '80px' }}>
                             <div className="text-xl mb-1">💬</div>
                             <div className="text-cyan-400 font-bold text-xs">{t.comments}</div>
                             <div className="text-white font-semibold text-sm">{formatNumber(mediaInfo.comments)}</div>
@@ -648,7 +659,7 @@ function App() {
                         )}
 
                         {mediaInfo.views !== undefined && (
-                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20" style={{ minHeight: '80px' }}>
                             <div className="text-xl mb-1">👁️</div>
                             <div className="text-cyan-400 font-bold text-xs">{t.views}</div>
                             <div className="text-white font-semibold text-sm">{formatNumber(mediaInfo.views)}</div>
@@ -656,7 +667,7 @@ function App() {
                         )}
 
                         {mediaInfo.timestamp && (
-                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20">
+                          <div className="bg-gray-600/30 rounded-xl p-3 text-center border border-cyan-400/20" style={{ minHeight: '80px' }}>
                             <div className="text-xl mb-1">📅</div>
                             <div className="text-cyan-400 font-bold text-xs">{t.timestamp}</div>
                             <div className="text-white font-semibold text-xs">{formatTimestamp(mediaInfo.timestamp)}</div>
@@ -693,7 +704,7 @@ function App() {
           </div>
 
           {/* Features Grid */}
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 relative z-10">
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 relative z-10" style={{ minHeight: '320px' }}>
             {[
               { icon: "🤖", label: "AI Powered", color: "from-cyan-400 to-blue-400" },
               { icon: "⚡", label: "Lightning Fast", color: "from-yellow-400 to-orange-400" },
@@ -702,9 +713,10 @@ function App() {
               { icon: "💫", label: "4K Support", color: "from-red-400 to-pink-400" },
               { icon: "🚀", label: "Instant", color: "from-indigo-400 to-purple-400" }
             ].map((feature, index) => (
-              <div 
-                key={index} 
-                className="text-center p-4 bg-gray-700/30 backdrop-blur-md rounded-xl border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/10"
+              <div
+                key={index}
+                className="text-center p-4 bg-gray-700/30 backdrop-blur-md rounded-xl border border-cyan-400/20 hover:border-cyan-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10 transform hover:scale-105"
+                style={{ minHeight: '120px' }}
               >
                 <div className={`text-3xl mb-2 bg-gradient-to-r ${feature.color} bg-clip-text text-transparent`}>
                   {feature.icon}
@@ -722,7 +734,7 @@ function App() {
           <h2 className="text-center text-4xl font-bold font-['Orbitron'] mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             {t.featuresTitle}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" style={{ minHeight: '400px' }}>
             {[
               {
                 icon: "⚡",
@@ -748,6 +760,7 @@ function App() {
               <div
                 key={i}
                 className="bg-gray-700/50 backdrop-blur-md border border-cyan-400/30 text-white text-center p-6 rounded-2xl shadow-lg hover:shadow-cyan-500/20 hover:border-cyan-400/60 transition-all duration-300 transform hover:-translate-y-2"
+                style={{ minHeight: '200px' }}
               >
                 <div className="text-4xl mb-3 p-2 w-16 h-16 rounded-full mx-auto bg-cyan-500/20 flex justify-center items-center">
                   {f.icon}
@@ -761,12 +774,12 @@ function App() {
       </section>
 
       {/* Services Section - 3D Style */}
-      <section id="services" className="py-16 bg-gray-900/80 text-white">
+      <section id="services" className="py-16 bg-gray-900/80 text-white" style={{ minHeight: '600px' }}>
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-center text-4xl font-bold font-['Orbitron'] mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             {t.servicesTitle}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 justify-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 justify-items-center" style={{ minHeight: '400px' }}>
             {[
               { icon: "📹", title: "Video Downloader" },
               { icon: "📷", title: "Photo Downloader" },
@@ -777,6 +790,7 @@ function App() {
               <div
                 key={i}
                 className="bg-gradient-to-tr from-cyan-500 to-blue-600 text-white text-center p-8 rounded-2xl shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 transform hover:-translate-y-2 w-full max-w-sm border border-cyan-400/30"
+                style={{ minHeight: '160px' }}
               >
                 <div className="text-5xl mb-4">{s.icon}</div>
                 <h5 className="font-semibold text-xl font-['Orbitron']">{s.title}</h5>
@@ -787,12 +801,12 @@ function App() {
       </section>
 
       {/* FAQ Section - 3D Style */}
-      <section id="faq" className="py-16 bg-gray-800/50 backdrop-blur-md text-white">
+      <section id="faq" className="py-16 bg-gray-800/50 backdrop-blur-md text-white" style={{ minHeight: '800px' }}>
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="text-center text-4xl font-bold font-['Orbitron'] mb-12 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             {t.faqTitle}
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-4" style={{ minHeight: '600px' }}>
             {[
               {
                 q: "❓ Is it legal to download media?",
@@ -822,6 +836,7 @@ function App() {
               <div
                 key={i}
                 className="bg-gray-700/50 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden border border-cyan-400/30 hover:border-cyan-400/60 transition-all duration-300"
+                style={{ minHeight: '80px' }}
               >
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
@@ -842,7 +857,7 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900/90 backdrop-blur-md text-gray-300 py-8 border-t border-cyan-500/30">
+      <footer className="bg-gray-900/90 backdrop-blur-md text-gray-300 py-8 border-t border-cyan-500/30" style={{ minHeight: '120px' }}>
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-lg font-['Orbitron']">{t.copyright}</p>
           <p className="mt-4">
@@ -852,6 +867,10 @@ function App() {
             <span className="mx-2">|</span>
             <a href="/terms.html" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
               {t.terms}
+            </a>
+            <span className="mx-2">|</span>
+            <a href="/contact.html" className="text-cyan-400 hover:text-cyan-300 hover:underline mx-3 transition-colors">
+              {t.contact}
             </a>
           </p>
         </div>
@@ -867,6 +886,43 @@ function App() {
 
 
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+      <style>
+        {`
+          @font-face {
+            font-family: 'Orbitron';
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'Rajdhani';
+            font-display: swap;
+          }
+
+          /* Reserve space for dynamic content to prevent CLS */
+          .media-preview-placeholder {
+            min-height: 600px;
+          }
+
+          .error-placeholder {
+            min-height: 72px;
+          }
+
+          .stats-card {
+            min-height: 80px;
+          }
+
+          .feature-card {
+            min-height: 120px;
+          }
+
+          .media-selector {
+            min-height: 88px;
+          }
+
+          .features-grid {
+            min-height: 320px;
+          }
+        `}
+      </style>
     </div>
   );
 }

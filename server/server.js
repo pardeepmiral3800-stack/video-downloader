@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import ytdl from "@distube/ytdl-core";
 import { instagramGetUrl } from "instagram-url-direct";
 import path from "path";
@@ -14,6 +15,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint
+app.get("/", (req, res) => {
+  res.send('OK');
+});
+
 // Security headers middleware
 app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -24,6 +30,7 @@ app.use((_req, res, next) => {
   next();
 });
 
+<<<<<<< HEAD
 // Health check route - FIXED: specific path
 app.get('/health', (_req, res) => {
   res.send('Server is running!');
@@ -33,6 +40,21 @@ app.get('/health', (_req, res) => {
 app.use(express.static(path.join(__dirname, "public")));
 
 // YouTube download route
+=======
+// Serve static files from client build
+app.use(express.static(path.join(process.cwd(), 'public')));
+
+// Serve index.html for all non-API routes
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/instagram') && !req.path.startsWith('/youtube')) {
+    res.sendFile(path.join(process.cwd(), 'public/index.html'));
+  } else {
+    res.status(404).json({ error: 'Not found' });
+  }
+});
+ 
+ 
+>>>>>>> origin/main
 app.get("/youtube/download", (req, res) => {
   const url = req.query.url;
   const itag = req.query.itag;
@@ -102,6 +124,7 @@ app.get("/instagram/download", async (req, res) => {
     res.status(500).json({ error: "Failed to download media" });
   }
 });
+<<<<<<< HEAD
 
 // CATCH-ALL ROUTE - MUST BE LAST AND USE '/*' NOT '*'
 app.get('/*', (req, res) => {
@@ -111,3 +134,11 @@ app.get('/*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () =>
   console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
 );
+=======
+ 
+
+
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`✅ Server running at http://0.0.0.0:${PORT}`)
+);
+>>>>>>> origin/main

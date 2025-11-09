@@ -2,6 +2,7 @@
   "name": "video-downloader",
   "version": "1.0.0",
   "description": "Instagram and YouTube video downloader",
+<<<<<<< HEAD
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -11,12 +12,25 @@
     "install-server": "cd server && npm install",
     "install-client": "cd client && npm install",
     "health": "curl -f http://localhost:5000/ || exit 1"
+=======
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "cd server && node --watch server.js",
+    "build": "cd client && npm run build",
+    "install-server": "cd server && npm install",
+    "install-client": "cd client && npm install"
+>>>>>>> origin/main
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
     "tailwindcss": "^4.1.13"
   },
   "engines": {
+<<<<<<< HEAD
     "node": ">=16.0.0"
+=======
+    "node": ">=20.0.0"
+>>>>>>> origin/main
   }
 }
