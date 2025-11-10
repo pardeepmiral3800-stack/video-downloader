@@ -108,8 +108,8 @@ app.get("/instagram/download", async (req, res) => {
   }
 });
 
-// CATCH-ALL ROUTE - MUST BE LAST AND USE '/*' NOT '*'
-app.get('/*', (req, res) => {
+// CATCH-ALL ROUTE - MUST BE LAST
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
